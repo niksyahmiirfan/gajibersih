@@ -43,32 +43,34 @@ export function Calculator({ rules, locale = 'en', initialSalary = 5000 }: { rul
     <div className="calc">
       <div className="calc-sticky" aria-hidden="true"><span>{t.takeHome}</span><b>{formatRM(r.net)}</b></div>
       <form className="inputs" onSubmit={(e) => e.preventDefault()}>
-        <label>{t.salary}
+        <label className="field-salary">{t.salary}
           <input type="number" inputMode="decimal" min={0} step={50} value={salary || ''} onChange={num(setSalary)} />
         </label>
-        <div className="row">
-          <label>{t.age}
-            <input type="number" min={16} max={80} value={age} onChange={num(setAge)} />
-          </label>
-          <label>{t.residency}
+        <label>{t.residency}
+          <span className="select-wrap">
             <select value={residency} onChange={(e) => setResidency(e.target.value as Residency)}>
               <option value="citizen">{t.citizen}</option>
               <option value="pr">{t.pr}</option>
               <option value="foreign">{t.foreign}</option>
             </select>
-          </label>
-        </div>
-        <label className="check"><input type="checkbox" checked={taxResident} onChange={(e) => setTaxResident(e.target.checked)} /> {t.taxResident}</label>
-        <label className="check"><input type="checkbox" checked={skbbk} onChange={(e) => setSkbbk(e.target.checked)} disabled={residency === 'foreign'} /> {t.skbbk}</label>
-        <label className="check"><input type="checkbox" checked={spouseRelief} onChange={(e) => setSpouseRelief(e.target.checked)} /> {t.spouse}</label>
+          </span>
+        </label>
         <div className="row">
-          <label>{t.children}
-            <input type="number" min={0} max={20} value={children} onChange={num(setChildren)} />
+          <label>{t.age}
+            <input type="number" inputMode="numeric" min={16} max={80} value={age} onChange={num(setAge)} />
           </label>
-          <label>{t.otherReliefs}
-            <input type="number" min={0} step={100} value={otherReliefs || ''} onChange={num(setOtherReliefs)} />
+          <label>{t.children}
+            <input type="number" inputMode="numeric" min={0} max={20} value={children} onChange={num(setChildren)} />
           </label>
         </div>
+        <div className="checks">
+          <label className="check"><input type="checkbox" checked={taxResident} onChange={(e) => setTaxResident(e.target.checked)} /> <span>{t.taxResident}</span></label>
+          <label className="check"><input type="checkbox" checked={skbbk} onChange={(e) => setSkbbk(e.target.checked)} disabled={residency === 'foreign'} /> <span>{t.skbbk}</span></label>
+          <label className="check"><input type="checkbox" checked={spouseRelief} onChange={(e) => setSpouseRelief(e.target.checked)} /> <span>{t.spouse}</span></label>
+        </div>
+        <label>{t.otherReliefs}
+          <input type="number" inputMode="decimal" min={0} step={100} placeholder="0" value={otherReliefs || ''} onChange={num(setOtherReliefs)} />
+        </label>
         <p className="muted small">{t.disclaimer} {t.lastVerified}: {rules.meta.last_verified}.</p>
       </form>
       <Breakdown r={r} t={t} />
