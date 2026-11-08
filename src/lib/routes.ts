@@ -23,6 +23,7 @@ export function counterpart(path: string): string {
     const hit = PAIRS.find(([en]) => p.startsWith(en));
     return hit ? hit[1] : '/ms/kalkulator-gaji-bersih/';
   }
+  if (p.startsWith('/ms/kalkulator-gaji-bersih/')) return '/';
   const hit = PAIRS.find(([, ms]) => p.startsWith(ms));
   return hit ? hit[0] : '/';
 }

@@ -1,26 +1,10 @@
-import Link from 'next/link';
-import { loadMyRules } from '@/lib/rules';
-import { Calculator } from '@/components/Calculator';
-import { Personas } from '@/components/Personas';
-import { GuideTeasers } from '@/components/GuideTeasers';
-import { loadPersonas } from '@/lib/extras';
-import { SalaryLinks } from '@/components/SalaryLinks';
+import type { Metadata } from 'next';
+import { SalaryHome } from '@/components/SalaryHome';
+
+export const metadata: Metadata = {
+  alternates: { canonical: '/', languages: { en: '/', ms: '/ms/kalkulator-gaji-bersih/' } },
+};
 
 export default function Home() {
-  const rules = loadMyRules();
-  const asOf = new Date().toISOString().slice(0, 10);
-  return (
-    <>
-      <h1>Malaysia take-home pay calculator {rules.meta.year}</h1>
-      <p className="lead">
-        Enter your monthly salary to see what lands in your bank account after EPF, SOCSO, EIS, SKBBK and an
-        income tax estimate — plus what your employer pays on top.
-      </p>
-      <Calculator rules={rules} />
-      <Personas rules={rules} personas={loadPersonas()} />
-      <GuideTeasers />
-      <h2>Take-home pay by salary</h2>
-      <SalaryLinks rules={rules} asOf={asOf} />
-    </>
-  );
+  return <SalaryHome locale="en" />;
 }
