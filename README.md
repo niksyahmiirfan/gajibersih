@@ -72,7 +72,7 @@ Free-tier limits and model names change: check the current ones and set `LLM_MOD
 | `content.yml` | weekly / manual | drafts approved keywords → PR |
 | `refresh.yml` | daily | official rate pages changed → GitHub issue |
 | `metrics.yml` | daily | metrics snapshot → private metrics repo |
-| `deploy.yml` | main | GitHub Pages (or skip and connect Cloudflare Pages: build `npm run build`, output `out`, gives PR previews) |
+| Cloudflare Workers Builds | main + PRs | Hosting via `wrangler.jsonc` (static assets from `out/`). Build `npm run build`, deploy `npx wrangler deploy`; preview URL on every PR |
 
 ## Yearly update checklist
 

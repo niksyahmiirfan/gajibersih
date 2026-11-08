@@ -1,0 +1,13 @@
+// Cloudflare Workers static-assets deployment for the Next.js static export in ./out
+// Workers Builds: build `npm run build`, deploy `npx wrangler deploy`.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "gajibersih",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./out",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  "preview_urls": true
+}
