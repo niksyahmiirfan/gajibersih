@@ -5,6 +5,7 @@ import { pathToFileURL } from 'node:url';
 import type { KeywordEntry } from './types';
 import { buildFacts } from './facts';
 import { CLUSTER_SALARIES, salarySlug } from '../src/lib/site';
+import { listSharings } from '../src/lib/content';
 
 export const ROOT = process.cwd();
 export const KEYWORDS_FILE = path.join(ROOT, 'pipeline', 'keywords.yaml');
@@ -27,6 +28,7 @@ export const factsFor = (k: KeywordEntry) =>
 export const INTERNAL_ROUTES = [
   '/', '/take-home-pay-calculator/', '/ms/kalkulator-gaji-bersih/', '/methodology/', '/about/', '/privacy/',
   ...CLUSTER_SALARIES.map((s) => `/salary/${salarySlug(s)}/`),
+  '/sharings/', ...listSharings('en').map((p) => `/sharings/${p.slug}/`),
 ];
 
 export const OFFICIAL_DOMAINS = ['kwsp.gov.my', 'perkeso.gov.my', 'hasil.gov.my', 'mof.gov.my', 'ssm.com.my'];

@@ -35,6 +35,31 @@ src/engine/my/*          Pure TypeScript calculator (runs in browser + build + p
 | `scripts/refresh-check.ts` | Rate-page watcher (fingerprints official pages listed in `data/watch.yaml`) |
 | `metrics/`, `dashboard/` | Metrics collector and dashboard — see `metrics/README.md` |
 
+## Sharings (blog)
+
+Posts live in `content/en/sharings/<slug>.md` and appear at `/sharings/` automatically (newest first, filterable by category).
+
+```yaml
+---
+title: "Post title"
+description: "One-line summary for the card and Google"
+date: 2026-11-08
+category: FAQ            # FAQ | Saving tips | Updates  (src/lib/content.ts)
+data_year: 2026          # flags the post as stale when rates move to a new year
+sources: [https://www.kwsp.gov.my/...]   # official sources; may be empty for general tips
+allowed_numbers: [50, 30, 20]            # extra figures you checked by hand; everything else must match the calculator
+draft: true              # optional: hide until ready
+---
+```
+
+The verifier checks posts like any other content (numbers, structure, disclaimer, links). Automating them later only needs a new keyword `type` in the pipeline that writes to this folder.
+
+## Personas, fun facts, theme
+
+- **Personas** (`data/personas.yaml`): inputs only; every figure in the section is computed live by the engine. Colours for the bar are a colour-blind-checked palette.
+- **Fun facts** (`data/my/<year>/fun-facts.yaml`): EN + BM, rotates daily in the browser (Malaysia date). Review yearly so facts match the rate files.
+- **Theme**: light/dark toggle stored in the browser; defaults to the visitor's system setting.
+
 ## Content pipeline
 
 1. Add keywords to `pipeline/keywords.yaml` as `proposed`; flip the good ones to `approved` (your keyword review).

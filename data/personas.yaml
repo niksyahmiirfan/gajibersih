@@ -1,0 +1,40 @@
+# Illustrative, fictional personas for the "Meet the payslips" section.
+# Only inputs live here — every figure shown is computed by the calculator engine.
+- id: aina
+  name: Aina
+  age: 27
+  residency: citizen
+  salary: 3800
+  avatar: { skin: "#e8b48f", style: tudung, accent: "#e87ba4" }
+  tagline: { en: "Fresh grad, first payslip", ms: "Graduan baharu, gaji pertama" }
+- id: meiling
+  name: Mei Ling
+  age: 36
+  residency: citizen
+  salary: 8500
+  spouseRelief: true
+  children: 2
+  avatar: { skin: "#f1c9a5", style: bun, accent: "#6250d6" }
+  tagline: { en: "Parent of two, sole earner", ms: "Ibu dua anak, satu pendapatan" }
+- id: arjun
+  name: Arjun
+  age: 33
+  residency: pr
+  salary: 6200
+  avatar: { skin: "#a8714f", style: short, accent: "#2a78d6" }
+  tagline: { en: "Permanent resident, engineer", ms: "Penduduk tetap, jurutera" }
+- id: rahman
+  name: Pak Rahman
+  age: 62
+  residency: citizen
+  salary: 5500
+  avatar: { skin: "#c98f6b", style: songkok, accent: "#1baf7a" }
+  tagline: { en: "Still working after 60", ms: "Masih bekerja selepas 60" }
+- id: budi
+  name: Budi
+  age: 30
+  residency: foreign
+  salary: 2200
+  taxResident: true
+  avatar: { skin: "#b7835e", style: cap, accent: "#eb6834" }
+  tagline: { en: "Foreign worker, sends money home", ms: "Pekerja asing, hantar wang ke kampung" }

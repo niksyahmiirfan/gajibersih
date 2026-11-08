@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { loadMyRules } from '@/lib/rules';
 import { Calculator } from '@/components/Calculator';
+import { Personas } from '@/components/Personas';
+import { loadPersonas } from '@/lib/extras';
 import { SalaryLinks } from '@/components/SalaryLinks';
 
 export default function Home() {
@@ -14,6 +16,7 @@ export default function Home() {
         income tax estimate — plus what your employer pays on top. <Link href="/ms/kalkulator-gaji-bersih/">Baca dalam Bahasa Malaysia</Link>.
       </p>
       <Calculator rules={rules} />
+      <Personas rules={rules} personas={loadPersonas()} />
       <h2>Take-home pay by salary</h2>
       <SalaryLinks rules={rules} asOf={asOf} />
     </>

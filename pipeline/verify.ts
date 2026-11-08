@@ -63,18 +63,25 @@ export function verifyFile(file: string, others: string[] = []): FileReport {
   const { data, content } = matter(fs.readFileSync(file, 'utf8'));
   const facts = factsForFile(file);
   const allowed = allowedNumbers(facts);
+  const isSharing = /content\/[a-z]{2}\/sharings\//.test(file.replace(/\\/g, '/'));
+  // Posts may list extra figures (e.g. 50/30/20) that a human reviewer has checked
+  for (const n of (data.allowed_numbers ?? []) as number[]) allowed.add(Math.round(Number(n) * 100) / 100);
+  if (isSharing) {
+    if (!data.date) add('error', 'frontmatter', 'sharings post needs a date');
+    if (!data.category) add('error', 'frontmatter', 'sharings post needs a category');
+  }
 
   // Frontmatter
   if (!data.title) add('error', 'frontmatter', 'missing title');
   else if (String(data.title).length > 70) add('warn', 'frontmatter', `title is ${String(data.title).length} chars (>70)`);
   const dl = String(data.description ?? '').length;
   if (dl < 50 || dl > 165) add('warn', 'frontmatter', `description length ${dl} (aim 120–155)`);
-  if (!Array.isArray(data.faqs) || data.faqs.length < 2) add('error', 'faqs', 'need at least 2 FAQs');
+  if (!isSharing && (!Array.isArray(data.faqs) || data.faqs.length < 2)) add('error', 'faqs', 'need at least 2 FAQs');
   if (data.data_year && Number(data.data_year) !== facts.year) add('error', 'staleness', `written for ${data.data_year} data but current data is ${facts.year}`);
 
   // Sources: official domains only
   const sources: string[] = data.sources ?? [];
-  if (!sources.length) add('error', 'sources', 'no sources listed');
+  if (!sources.length) add(isSharing ? 'warn' : 'error', 'sources', 'no sources listed');
   for (const s of sources) {
     try { const host = new URL(s).hostname; if (!OFFICIAL_DOMAINS.some((d) => host === d || host.endsWith('.' + d))) add('error', 'sources', `non-official source: ${s}`); }
     catch { add('error', 'sources', `invalid URL: ${s}`); }

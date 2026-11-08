@@ -1,0 +1,44 @@
+# Fun facts, tips and sayings for the daily banner. Review each year: facts must match the rate files in this folder.
+# kind: fact | tip | proverb | quote
+- kind: fact
+  en: "Earn RM5,000 or less? Your employer puts 13% into your EPF, more than your own 11%."
+  ms: "Gaji RM5,000 ke bawah? Majikan mencarum 13% ke KWSP anda, lebih daripada 11% caruman anda."
+- kind: fact
+  en: "The first RM5,000 of chargeable income each year is taxed at 0%."
+  ms: "RM5,000 pertama pendapatan bercukai setiap tahun dikenakan cukai 0%."
+- kind: fact
+  en: "Chargeable income of RM35,000 or less gets a RM400 tax rebate."
+  ms: "Pendapatan bercukai RM35,000 ke bawah layak rebat cukai RM400."
+- kind: fact
+  en: "Your EPF contributions count for up to RM4,000 of tax relief a year."
+  ms: "Caruman KWSP anda layak pelepasan cukai sehingga RM4,000 setahun."
+- kind: fact
+  en: "SOCSO, EIS and SKBBK stop going up once your salary passes RM6,000."
+  ms: "PERKESO, SIP dan SKBBK berhenti meningkat apabila gaji melebihi RM6,000."
+- kind: fact
+  en: "SKBBK (LINDUNG 24 Jam), on payslips since June 2026, covers accidents outside working hours."
+  ms: "SKBBK (LINDUNG 24 Jam), dalam slip gaji sejak Jun 2026, melindungi kemalangan di luar waktu kerja."
+- kind: fact
+  en: "EPF amounts are rounded up to the next ringgit, so most payslips show whole ringgit."
+  ms: "Caruman KWSP dibundarkan ke ringgit seterusnya, jadi kebanyakan slip gaji menunjukkan ringgit penuh."
+- kind: tip
+  en: "Try 50/30/20: half of take-home pay for needs, 30% for wants, 20% for savings."
+  ms: "Cuba 50/30/20: separuh gaji bersih untuk keperluan, 30% kehendak, 20% simpanan."
+- kind: tip
+  en: "Pay yourself first: schedule a savings transfer for payday, before spending starts."
+  ms: "Bayar diri sendiri dahulu: jadualkan pindahan simpanan pada hari gaji, sebelum mula berbelanja."
+- kind: tip
+  en: "A common guideline: keep three to six months of expenses as an emergency fund."
+  ms: "Panduan biasa: simpan tiga hingga enam bulan perbelanjaan sebagai dana kecemasan."
+- kind: tip
+  en: "Got a raise? Save part of the increase before your lifestyle catches up."
+  ms: "Dapat kenaikan gaji? Simpan sebahagian kenaikan itu sebelum gaya hidup turut naik."
+- kind: proverb
+  en: "“Sedikit-sedikit, lama-lama jadi bukit.” Little by little, it becomes a hill. (Malay proverb)"
+  ms: "“Sedikit-sedikit, lama-lama jadi bukit.” (Peribahasa Melayu)"
+- kind: proverb
+  en: "“Ingat sebelum kena, jimat sebelum habis.” Think before trouble, save before it runs out. (Malay proverb)"
+  ms: "“Ingat sebelum kena, jimat sebelum habis.” (Peribahasa Melayu)"
+- kind: quote
+  en: "“Beware of little expenses; a small leak will sink a great ship.” Benjamin Franklin"
+  ms: "“Berhati-hatilah dengan perbelanjaan kecil; kebocoran kecil boleh menenggelamkan kapal besar.” Benjamin Franklin"

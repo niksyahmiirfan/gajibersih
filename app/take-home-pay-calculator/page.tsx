@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { loadMyRules } from '@/lib/rules';
 import { loadContent } from '@/lib/content';
 import { Calculator } from '@/components/Calculator';
+import { Personas } from '@/components/Personas';
+import { loadPersonas } from '@/lib/extras';
 import { AdSlot } from '@/components/AdSlot';
 import { SalaryLinks } from '@/components/SalaryLinks';
 
@@ -21,6 +23,7 @@ export default function Page() {
       <h1>Take-home pay calculator Malaysia {rules.meta.year}</h1>
       <p className="lead">Your net salary after every statutory deduction, using the KWSP Third Schedule, PERKESO contribution tables and LHDN tax rates.</p>
       <Calculator rules={rules} />
+      <Personas rules={rules} personas={loadPersonas()} />
       <AdSlot slot="0000000001" />
       {doc ? (
         <article className="prose" dangerouslySetInnerHTML={{ __html: doc.html }} />
