@@ -27,6 +27,7 @@ export const factsFor = (k: KeywordEntry) =>
 
 export const INTERNAL_ROUTES = [
   '/', '/take-home-pay-calculator/', '/ms/kalkulator-gaji-bersih/', '/methodology/', '/about/', '/privacy/',
+  '/credit-cards/', '/ms/kad-kredit/', '/loans/', '/ms/pinjaman/', '/ms/perkongsian/',
   ...CLUSTER_SALARIES.map((s) => `/salary/${salarySlug(s)}/`),
   '/sharings/', ...listSharings('en').map((p) => `/sharings/${p.slug}/`),
 ];

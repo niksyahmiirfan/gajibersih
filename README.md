@@ -60,6 +60,17 @@ The verifier checks posts like any other content (numbers, structure, disclaimer
 - **Fun facts** (`data/my/<year>/fun-facts.yaml`): EN + BM, rotates daily in the browser (Malaysia date). Review yearly so facts match the rate files.
 - **Theme**: light/dark toggle stored in the browser; defaults to the visitor's system setting.
 
+## Credit card & loan guides
+
+- **Pages:** `/credit-cards/` ↔ `/ms/kad-kredit/`, `/loans/` ↔ `/ms/pinjaman/` (car and home tabs, `#home` deep link). Text lives in `src/components/cards/CreditCardsGuide.tsx` and `src/components/loans/LoansGuide.tsx` (EN + BM side by side). Every figure in the stories is computed by `src/engine/finance.ts`.
+- **Card data:** `data/credit-cards.yaml` is *starter data*. Re-check each card on the bank's site before launch, then monthly; bump `last_checked` (shown on the page). A future "card watcher" can reuse `scripts/refresh-check.ts` with the banks' card pages.
+- **Rules encoded:** Bank Negara card eligibility (RM24,000 minimum; ≤RM36,000 → 2 issuers, 2× monthly income), tiered card interest 15/17/18%, minimum payment 5% or RM50, Hire-Purchase (Amendment) Act 2026 (EIR + reducing balance from 1 June 2026), MOT stamp duty tiers, and the first-home exemption up to RM500,000 until 31 Dec 2027. Tests: `tests/finance.test.ts` (includes Bank Negara's RM100k / 9-year / 3%-flat ≈ 5.5% EIR example).
+
+## Languages & mobile
+
+- EN/BM switch in the header maps each page to its pair (`src/lib/routes.ts`). Pages without a BM version go to the BM calculator (salary pages carry `?salary=`).
+- Mobile: bottom tab bar under 860px, sticky header and take-home pill, 16px inputs (no iOS zoom), safe-area padding. Checked at 390px with no horizontal overflow.
+
 ## Content pipeline
 
 1. Add keywords to `pipeline/keywords.yaml` as `proposed`; flip the good ones to `approved` (your keyword review).

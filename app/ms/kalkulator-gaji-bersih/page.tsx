@@ -3,6 +3,7 @@ import { loadMyRules } from '@/lib/rules';
 import { loadContent } from '@/lib/content';
 import { Calculator } from '@/components/Calculator';
 import { Personas } from '@/components/Personas';
+import { GuideTeasers } from '@/components/GuideTeasers';
 import { loadPersonas } from '@/lib/extras';
 
 export const metadata: Metadata = {
@@ -20,6 +21,7 @@ export default function Page() {
       <p className="lead">Masukkan gaji kasar bulanan untuk melihat gaji bersih selepas potongan KWSP, PERKESO, SIP, SKBBK dan anggaran cukai, serta kos yang ditanggung majikan.</p>
       <Calculator rules={rules} locale="ms" />
       <Personas rules={rules} personas={loadPersonas()} locale="ms" />
+      <GuideTeasers locale="ms" />
       {doc && <article className="prose" dangerouslySetInnerHTML={{ __html: doc.html }} />}
     </div>
   );

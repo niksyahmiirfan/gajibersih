@@ -5,6 +5,7 @@ import type { MyRules, Residency } from '@/engine/my/types';
 import { dict, type Locale } from '@/i18n/dict';
 import { Breakdown } from './Breakdown';
 import { track } from './analytics';
+import { formatRM } from '@/engine/my/money';
 
 export function Calculator({ rules, locale = 'en', initialSalary = 5000 }: { rules: MyRules; locale?: Locale; initialSalary?: number }) {
   const t = dict[locale];
@@ -40,6 +41,7 @@ export function Calculator({ rules, locale = 'en', initialSalary = 5000 }: { rul
 
   return (
     <div className="calc">
+      <div className="calc-sticky" aria-hidden="true"><span>{t.takeHome}</span><b>{formatRM(r.net)}</b></div>
       <form className="inputs" onSubmit={(e) => e.preventDefault()}>
         <label>{t.salary}
           <input type="number" inputMode="decimal" min={0} step={50} value={salary || ''} onChange={num(setSalary)} />

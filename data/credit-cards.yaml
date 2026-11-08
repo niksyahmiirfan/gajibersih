@@ -1,0 +1,119 @@
+# Entry-level credit cards for the card finder.
+# STARTER DATA — checked 2026-11-08 against bank listings and comparison sites (iMoney, RinggitPlus, Maybank card listing).
+# Card perks, caps and fee waivers change often: re-check each card on the bank's site before launch and monthly after.
+# fee: none (no annual fee) | waivable (waived with spend/swipes) | check (confirm with bank)
+# tags: petrol, groceries, online, dining, ehailing, travel, bills, everyday
+last_checked: "2026-11-08"
+checked_from:
+  - https://www.imoney.my/credit-card/top-10-credit-cards
+  - https://www.imoney.my/credit-card/rhb
+  - https://www.maybank2u.com.my/maybank2u/malaysia/en/personal/cards/cc_apply_listing.page
+cards:
+  - id: maybank-2-gold
+    name: Maybank 2 Cards (Gold)
+    issuer: Maybank
+    url: https://www.maybank2u.com.my/
+    min_income: 30000
+    fee: none
+    islamic: false
+    tags: [dining, groceries, everyday]
+    colors: ["#2b2b2b", "#c9a227"]
+    perks:
+      en: ["Two cards in one application (Amex + Visa/Mastercard)", "Weekend cashback on the Amex card, capped monthly with a minimum spend"]
+      ms: ["Dua kad dalam satu permohonan (Amex + Visa/Mastercard)", "Pulangan tunai hujung minggu pada kad Amex, ada had bulanan dan belanja minimum"]
+  - id: maybank-grab
+    name: Maybank Grab Mastercard Platinum
+    issuer: Maybank
+    url: https://www.maybank2u.com.my/
+    min_income: 24000
+    fee: check
+    islamic: false
+    tags: [ehailing, online]
+    colors: ["#0a7f45", "#06c167"]
+    perks:
+      en: ["Extra Grab Rewards points on Grab rides, food and deliveries"]
+      ms: ["Mata Grab Rewards tambahan untuk Grab, makanan dan penghantaran"]
+  - id: cimb-cash-rebate
+    name: CIMB Cash Rebate Platinum
+    issuer: CIMB
+    url: https://www.cimb.com.my/
+    min_income: 24000
+    fee: waivable
+    islamic: false
+    tags: [petrol, groceries, bills]
+    colors: ["#7a0c14", "#e0242f"]
+    perks:
+      en: ["Tiered cashback on petrol, groceries, utilities and streaming", "Higher rates unlock with higher monthly spend"]
+      ms: ["Pulangan tunai berperingkat untuk petrol, barangan dapur, utiliti dan penstriman", "Kadar lebih tinggi dengan belanja bulanan lebih besar"]
+  - id: cimb-travel
+    name: CIMB Travel Platinum
+    issuer: CIMB
+    url: https://www.cimb.com.my/
+    min_income: 24000
+    fee: none
+    islamic: false
+    tags: [travel]
+    colors: ["#1d2b4f", "#3a6fd8"]
+    perks:
+      en: ["Airport lounge visits unlocked by quarterly spend", "Foreign currency fee of about 1%"]
+      ms: ["Akses lounge lapangan terbang dengan belanja suku tahunan", "Caj mata wang asing sekitar 1%"]
+  - id: pb-quantum
+    name: Public Bank Quantum
+    issuer: Public Bank
+    url: https://www.pbebank.com/
+    min_income: 24000
+    fee: none
+    islamic: false
+    tags: [online, everyday]
+    colors: ["#8a1020", "#d63a4a"]
+    perks:
+      en: ["Cashback on online and contactless spending", "No annual fee"]
+      ms: ["Pulangan tunai untuk belanja dalam talian dan tanpa sentuh", "Tiada yuran tahunan"]
+  - id: rhb-shell
+    name: RHB Shell Visa
+    issuer: RHB
+    url: https://www.rhbgroup.com/
+    min_income: 24000
+    fee: waivable
+    islamic: false
+    tags: [petrol, groceries, online, bills]
+    colors: ["#b8860b", "#f2c200"]
+    perks:
+      en: ["High cashback at Shell stations", "Cashback on groceries, online spend, e-wallet reloads and bills"]
+      ms: ["Pulangan tunai tinggi di stesen Shell", "Pulangan tunai untuk barangan dapur, belanja dalam talian, tambah nilai e-dompet dan bil"]
+  - id: rhb-cashback
+    name: RHB Cash Back
+    issuer: RHB
+    url: https://www.rhbgroup.com/
+    min_income: 24000
+    fee: waivable
+    islamic: false
+    tags: [everyday, groceries, dining, petrol]
+    colors: ["#003b73", "#0b74c4"]
+    perks:
+      en: ["Cashback across six everyday categories", "Annual fee waived with RM10,000 yearly spend or 24 swipes"]
+      ms: ["Pulangan tunai dalam enam kategori harian", "Yuran tahunan dikecualikan dengan belanja RM10,000 setahun atau 24 kali leret"]
+  - id: uob-simple
+    name: UOB Simple
+    issuer: UOB
+    url: https://www.uob.com.my/
+    min_income: 24000
+    fee: none
+    islamic: false
+    tags: [everyday]
+    colors: ["#23305c", "#5b6fb5"]
+    perks:
+      en: ["No annual fee for principal and supplementary cards", "Simple, low-maintenance starter card"]
+      ms: ["Tiada yuran tahunan untuk kad utama dan tambahan", "Kad permulaan yang ringkas"]
+  - id: bank-islam-platinum-i
+    name: Bank Islam Visa Platinum Card-i
+    issuer: Bank Islam
+    url: https://www.bankislam.com/
+    min_income: 24000
+    fee: check
+    islamic: true
+    tags: [online, groceries, dining, bills]
+    colors: ["#5c1a5c", "#a8329e"]
+    perks:
+      en: ["Shariah-compliant (profit instead of interest)", "Cashback on online, auto-billing, groceries and dining, capped monthly"]
+      ms: ["Patuh Syariah (keuntungan, bukan faedah)", "Pulangan tunai untuk dalam talian, bil auto, barangan dapur dan makan, ada had bulanan"]
