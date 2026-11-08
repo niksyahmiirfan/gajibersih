@@ -22,7 +22,9 @@ jobs:
       - name: Open issue for changed sources
         if: steps.check.outputs.changed == 'true'
         env: { GH_TOKEN: '${{ github.token }}' }
-        run: gh issue create --title "Official rate page changed ($(date +%F))" --body-file changes.md --label data-refresh
+        run: |
+          gh label create data-refresh --color D93F0B --description "Official rate source changed" --force
+          gh issue create --title "Official rate page changed ($(date +%F))" --body-file changes.md --label data-refresh
       - name: Commit updated fingerprints
         run: |
           git config user.name "github-actions[bot]"
