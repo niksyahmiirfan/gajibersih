@@ -1,0 +1,60 @@
+name: Collect metrics
+# Daily snapshot of Search Console, GA4 and AdSense into JSON/CSV.
+# AdSense terms treat most report data (RPM, CTR…) as confidential, so the data is written to a PRIVATE repo
+# (METRICS_REPO, e.g. you/gajibersih-metrics) or committed here only if this repo itself is private.
+on:
+  schedule:
+    - cron: '11 2 * * *'    # 10:11 MYT
+  workflow_dispatch:
+    inputs:
+      days:
+        description: Days to (re)fetch — use 480 for a first backfill (GSC keeps ~16 months)
+        default: '10'
+
+permissions:
+  contents: write
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    env:
+      METRICS_REPO: ${{ vars.METRICS_REPO }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+
+      - name: Refuse to publish metrics from a public repo
+        if: ${{ !github.event.repository.private && env.METRICS_REPO == '' }}
+        run: |
+          echo "::error::This repo is public. Set the METRICS_REPO variable and METRICS_REPO_TOKEN secret (fine-grained PAT with contents:write on that private repo)."
+          exit 1
+
+      - name: Check out private metrics repo
+        if: ${{ env.METRICS_REPO != '' }}
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.METRICS_REPO }}
+          token: ${{ secrets.METRICS_REPO_TOKEN }}
+          path: _metrics
+
+      - name: Collect
+        run: npx tsx metrics/collect.ts --days ${{ inputs.days || '10' }}
+        env:
+          METRICS_OUT_DIR: ${{ env.METRICS_REPO != '' && format('{0}/_metrics/data', github.workspace) || '' }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          GSC_SITE_URL: ${{ vars.GSC_SITE_URL }}
+          GA4_PROPERTY_ID: ${{ vars.GA4_PROPERTY_ID }}
+          ADSENSE_ACCOUNT: ${{ vars.ADSENSE_ACCOUNT }}
+          ADSENSE_CLIENT_ID: ${{ secrets.ADSENSE_CLIENT_ID }}
+          ADSENSE_CLIENT_SECRET: ${{ secrets.ADSENSE_CLIENT_SECRET }}
+          ADSENSE_REFRESH_TOKEN: ${{ secrets.ADSENSE_REFRESH_TOKEN }}
+
+      - name: Commit snapshot
+        run: |
+          if [ -n "$METRICS_REPO" ]; then cd _metrics; else git add -f metrics/data; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
+          git add -A .
+          git diff --cached --quiet || (git commit -m "metrics: $(date +%F)" && git push)

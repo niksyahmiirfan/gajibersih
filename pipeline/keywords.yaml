@@ -1,0 +1,23 @@
+# Human-reviewed keyword queue. The pipeline only touches entries with status: approved.
+# Lifecycle: proposed -> approved (you) -> drafted (pipeline, PR opened) -> published (after merge)
+# Validate demand first (Google Trends, Keyword Planner, Search Console queries ranking 8–20).
+- id: take-home-pay
+  keyword: take home pay calculator malaysia
+  type: guide
+  section: tools
+  status: approved
+- id: salary-3000
+  keyword: rm3000 salary after epf and tax
+  type: salary
+  salary: 3000
+  status: approved
+- id: salary-5000
+  keyword: rm5000 salary after epf and tax
+  type: salary
+  salary: 5000
+  status: approved
+- id: salary-8000
+  keyword: rm8000 salary take home malaysia
+  type: salary
+  salary: 8000
+  status: proposed

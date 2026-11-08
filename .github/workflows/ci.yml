@@ -1,0 +1,30 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - name: Verify all content (numbers vs data, structure, sources, duplicates)
+        run: npx tsx pipeline/verify.ts --report verify-report.md
+      - name: Build static site
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ vars.SITE_URL }}
+          NEXT_PUBLIC_GA_ID: ${{ vars.GA_ID }}
+          NEXT_PUBLIC_ADSENSE_CLIENT: ${{ vars.ADSENSE_CLIENT }}
+      - name: Pipeline smoke test (offline mock provider)
+        run: |
+          cp pipeline/keywords.yaml /tmp/kw.yaml
+          LLM_PROVIDER=mock VERIFY_MIN_WORDS=50 npx tsx pipeline/run.ts --limit 1 --report /tmp/smoke.md
+          cat /tmp/smoke.md
+          git checkout -- content pipeline/keywords.yaml && git clean -fdq content

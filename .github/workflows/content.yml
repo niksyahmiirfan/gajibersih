@@ -1,0 +1,47 @@
+name: Content pipeline
+# Drafts articles for approved keywords and opens a PR. Never merges by itself.
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: Max articles to draft
+        default: '3'
+  schedule:
+    - cron: '17 1 * * 1'   # Mondays 09:17 MYT
+
+permissions:
+  contents: write
+  pull-requests: write
+  models: read            # for LLM_PROVIDER=github (GitHub Models via GITHUB_TOKEN)
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Brief → draft → verify
+        run: npx tsx pipeline/run.ts --limit ${{ inputs.limit || '3' }} --report pipeline-report.md
+        env:
+          LLM_PROVIDER: ${{ vars.LLM_PROVIDER || 'gemini' }}
+          LLM_MODEL: ${{ vars.LLM_MODEL }}
+          LLM_VERIFY_PROVIDER: ${{ vars.LLM_VERIFY_PROVIDER }}
+          LLM_VERIFY_MODEL: ${{ vars.LLM_VERIFY_MODEL }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      - name: Open pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: content/auto-${{ github.run_id }}
+          title: 'Content: new drafts (run ${{ github.run_number }})'
+          body-path: pipeline-report.md
+          commit-message: 'content: draft articles via pipeline'
+          labels: content, needs-review
+          add-paths: |
+            content/**
+            pipeline/keywords.yaml

@@ -1,0 +1,12 @@
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+.env
+.env.local
+service-account*.json
+# metrics data is private (AdSense terms) — kept in a private repo, see metrics/README.md
+metrics/data/*.json
+metrics/data/*.csv
+!metrics/data/.gitkeep

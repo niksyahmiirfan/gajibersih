@@ -1,0 +1,42 @@
+{
+  "name": "gajibersih",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Malaysia take-home pay calculator (EPF, SOCSO, EIS, SKBBK, tax estimate) + content pipeline + metrics dashboard",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "npx serve out",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "content:brief": "tsx pipeline/brief.ts",
+    "content:draft": "tsx pipeline/draft.ts",
+    "content:verify": "tsx pipeline/verify.ts",
+    "content:run": "tsx pipeline/run.ts",
+    "refresh:check": "tsx scripts/refresh-check.ts",
+    "metrics:collect": "tsx metrics/collect.ts",
+    "metrics:sample": "tsx metrics/collect.ts --sample",
+    "dashboard": "tsx scripts/serve-dashboard.ts"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "js-yaml": "^4.1.0",
+    "marked": "^15.0.0",
+    "next": "^16.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "chart.js": "^4.4.0",
+    "google-auth-library": "^9.15.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "vitest": "^3.0.0"
+  },
+  "type": "module"
+}

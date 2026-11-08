@@ -1,0 +1,33 @@
+# Resident individual income tax — YA2026 (unchanged since YA2023)
+# The site shows an ANNUAL TAX ESTIMATE / 12, labelled as an estimate. It is not the
+# official PCB (MTD) computation, which uses LHDN's schedule / formula method.
+source: https://www.hasil.gov.my/en/individual/individual-life-cycle/income-declaration/tax-rate/
+resident_brackets:          # chargeable income upper bound (RM) and marginal rate (%)
+  - { up_to: 5000, rate: 0 }
+  - { up_to: 20000, rate: 1 }
+  - { up_to: 35000, rate: 3 }
+  - { up_to: 50000, rate: 6 }
+  - { up_to: 70000, rate: 11 }
+  - { up_to: 100000, rate: 19 }
+  - { up_to: 400000, rate: 25 }
+  - { up_to: 600000, rate: 26 }
+  - { up_to: 2000000, rate: 28 }
+  - { up_to: null, rate: 30 }
+non_resident_rate: 30
+reliefs:                     # annual caps (RM) used by the estimate
+  self: 9000
+  epf_max: 4000              # part of the RM7,000 EPF + life insurance/takaful relief
+  socso_eis_max: 350
+  spouse_no_income: 4000
+  child_under_18: 2000
+rebates:
+  chargeable_income_threshold: 35000
+  self: 400
+  spouse: 400                # when spouse relief claimed
+pcb:
+  minimum_deduction: 10      # monthly PCB below RM10 is not deducted
+fixtures:                    # chargeable income -> tax before rebate
+  - { chargeable: 35000, tax: 600 }
+  - { chargeable: 50000, tax: 1500 }
+  - { chargeable: 100000, tax: 9400 }
+  - { chargeable: 2000000, tax: 528400 }

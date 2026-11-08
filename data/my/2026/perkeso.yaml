@@ -1,0 +1,37 @@
+# PERKESO: SOCSO (Act 4), EIS (Act 800), SKBBK / LINDUNG 24 Jam
+# Contributions come from banded tables. The bands are RM100 wide above RM1,000; each row's
+# amount equals rate x band midpoint, rounded UP to the nearest 5 sen. This reproduces the
+# published rows checked below (fixtures). Below RM1,000 the official table has irregular
+# rows — results there are approximate (statutory minimum wage is RM1,700 anyway).
+source: https://www.perkeso.gov.my/en/rate-of-contribution.html
+wage_ceiling: 6000          # effective 1 Oct 2024
+band_width: 100
+low_band_edges: [30, 50, 70, 100, 140, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+round_to_sen: 5
+socso:
+  first_category:           # under 60
+    employee: 0.5
+    employer: 1.75
+  second_category:          # 60+ (employment injury only)
+    employee: 0
+    employer: 1.25
+eis:
+  employee: 0.2
+  employer: 0.2
+  min_age: 18
+  max_age: 60               # coverage 18–60; excludes foreign workers and domestic servants
+  excludes_foreign_workers: true
+skbbk:                      # Skim Bencana Bukan Kerja (LINDUNG 24 Jam) — employee only
+  effective_from: "2026-06-01"
+  employee: 0.75
+  employer: 0
+  future_rates:
+    - { from: "2028-06-01", employee: 1.0 }
+    - { from: "2031-06-01", employee: 1.25 }
+  note: >
+    Mandatory for foreign workers. Locals auto-enrolled (Cabinet decision 8 Jul 2026) unless
+    they opted out 13 Jul–31 Aug 2026. Schedule top row is RM44.65; PERKESO FAQ states RM45.00.
+fixtures:
+  - { wage: 3000, socso_employee: 14.75, socso_employer: 51.65, eis: 5.90, skbbk: 22.15 }
+  - { wage: 5000, socso_employee: 24.75, socso_employer: 86.65, eis: 9.90, skbbk: 37.15 }
+  - { wage: 8000, socso_employee: 29.75, socso_employer: 104.15, eis: 11.90, skbbk: 44.65 }

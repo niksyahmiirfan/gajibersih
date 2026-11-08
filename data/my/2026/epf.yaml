@@ -1,0 +1,33 @@
+# EPF (KWSP) Third Schedule — effective 1 Oct 2025, applies through 2026
+# Rates in percent. Banded amounts: contribution is computed on the band's upper limit
+# and cents are rounded UP to the next ringgit (schedule rule).
+source: https://www.kwsp.gov.my/en/employer/contribution-rate
+banding:
+  min_wage_for_contribution: 10     # no contribution for wages <= RM10
+  bands:
+    - { up_to: 5000, width: 20 }    # RM0–5,000: RM20 bands
+    - { up_to: 20000, width: 100 }  # RM5,000–20,000: RM100 bands
+  above_last_band: percentage       # > RM20,000: straight % of actual wage, rounded up to ringgit
+categories:
+  citizen_under_60:
+    employee: 11
+    employer:
+      - { wage_up_to: 5000, rate: 13 }
+      - { wage_up_to: null, rate: 12 }
+  citizen_60_plus:
+    employee: 0
+    employer:
+      - { wage_up_to: null, rate: 4 }
+  pr_60_plus:
+    employee: 5.5
+    employer:
+      - { wage_up_to: 5000, rate: 6.5 }
+      - { wage_up_to: null, rate: 6 }
+  foreign_worker:                   # mandatory from 1 Oct 2025; calculated directly, not banded
+    employee: 2
+    employer:
+      - { wage_up_to: null, rate: 2 }
+    banded: false
+# Known table rows used as unit-test fixtures
+fixtures:
+  - { wage: 5000, employee: 550, employer: 650 }   # band 4,980.01–5,000.00

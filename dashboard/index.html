@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Site metrics — GajiBersih</title>
+<style>
+  .viz-root {
+    color-scheme: light;
+    --page: #f4f3ef; --surface-1: #fcfcfb; --line: #e4e2db; --grid: #ecebe6;
+    --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #7a7973;
+    --series-1: #2a78d6; --series-1-soft: #cde2fb;
+    --good: #0b7a3e; --critical: #c42b2b; --warning: #a35f00;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) .viz-root {
+      color-scheme: dark;
+      --page: #121211; --surface-1: #1a1a19; --line: #2e2e2b; --grid: #262624;
+      --text-primary: #f0efec; --text-secondary: #c3c2b7; --text-muted: #8f8e86;
+      --series-1: #3987e5; --series-1-soft: #184f95;
+      --good: #4cc47e; --critical: #ef7373; --warning: #e0a03a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .viz-root { background: var(--page); color: var(--text-primary); min-height: 100vh; padding: 20px clamp(12px, 3vw, 32px) 48px; }
+  header { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  h1 { font-size: 20px; margin: 0; } h2 { font-size: 13px; font-weight: 600; margin: 0 0 10px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .04em; }
+  .meta { color: var(--text-muted); font-size: 12px; }
+  .filters { display: flex; gap: 8px; align-items: center; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface-1); }
+  .seg button { border: 0; background: none; color: var(--text-secondary); padding: 6px 12px; font: inherit; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--series-1); color: #fff; }
+  a.btn { color: var(--text-secondary); border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; text-decoration: none; background: var(--surface-1); }
+  .banner { background: var(--surface-1); border: 1px dashed var(--warning); color: var(--text-secondary); border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; }
+  .grid { display: grid; gap: 12px; }
+  .kpis { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); margin-bottom: 12px; }
+  .card { background: var(--surface-1); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; min-width: 0; }
+  .kpi .label { color: var(--text-secondary); font-size: 12px; }
+  .kpi .value { font-size: 24px; font-weight: 650; font-variant-numeric: tabular-nums; margin: 2px 0; }
+  .kpi .delta { font-size: 12px; font-variant-numeric: tabular-nums; color: var(--text-muted); }
+  .delta.up { color: var(--good); } .delta.down { color: var(--critical); }
+  .charts { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); margin-bottom: 12px; }
+  .chart-box { position: relative; height: 180px; }
+  .two { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
+  @media (max-width: 900px) { .two { grid-template-columns: 1fr; } }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; color: var(--text-muted); font-weight: 500; padding: 4px 6px; border-bottom: 1px solid var(--line); }
+  td { padding: 6px; border-bottom: 1px solid var(--grid); }
+  td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.q { max-width: 0; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bars { display: flex; flex-direction: column; gap: 8px; }
+  .bar-row { display: grid; grid-template-columns: 110px 1fr 70px; gap: 8px; align-items: center; font-size: 13px; }
+  .bar-track { height: 10px; background: var(--grid); border-radius: 4px; }
+  .bar-fill { height: 100%; background: var(--series-1); border-radius: 4px; }
+  .health li { margin: 4px 0; } .health { list-style: none; padding: 0; margin: 0; }
+  .ok { color: var(--good); } .warn { color: var(--warning); } .bad { color: var(--critical); }
+  .empty { color: var(--text-muted); font-size: 13px; }
+  code { font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="viz-root">
+  <header>
+    <div>
+      <h1>Site metrics</h1>
+      <div class="meta" id="updated">Loading…</div>
+    </div>
+    <div class="filters">
+      <div class="seg" role="group" aria-label="Date range">
+        <button data-range="28" aria-pressed="true">28 days</button>
+        <button data-range="90" aria-pressed="false">90 days</button>
+        <button data-range="0" aria-pressed="false">All</button>
+      </div>
+      <a class="btn" href="/data/daily.csv" download>Export CSV</a>
+    </div>
+  </header>
+  <div id="banner"></div>
+
+  <section class="grid kpis" id="kpis" aria-label="Key metrics"></section>
+
+  <section class="grid charts" id="charts"></section>
+
+  <section class="grid two" style="margin-bottom:12px">
+    <div class="card">
+      <h2>Opportunity queries — position 8–20, last 28 days</h2>
+      <p class="meta" style="margin:-6px 0 8px">Best targets for a rewrite, a new cluster page or extra internal links.</p>
+      <div id="queries"></div>
+    </div>
+    <div class="card">
+      <h2>Sessions by country — last 28 days</h2>
+      <div id="countries" class="bars"></div>
+    </div>
+  </section>
+
+  <section class="grid two">
+    <div class="card"><h2>Top pages — last 28 days</h2><div id="pages"></div></div>
+    <div class="card"><h2>Content &amp; data health</h2><ul class="health" id="health"></ul></div>
+  </section>
+</div>
+
+<script src="/vendor/chart.js"></script>
+<script>
+const $ = (s) => document.querySelector(s);
+const fmt = {
+  int: (n) => n == null ? '—' : Math.round(n).toLocaleString('en-MY'),
+  pct: (n) => n == null ? '—' : (n * 100).toFixed(1) + '%',
+  dec: (n) => n == null ? '—' : n.toFixed(1),
+  usd: (n) => n == null ? '—' : '$' + n.toFixed(2),
+};
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+async function load(name) {
+  try { const r = await fetch('/data/' + name, { cache: 'no-store' }); return r.ok ? r.json() : null; } catch { return null; }
+}
+
+const sum = (rows, k) => rows.reduce((s, r) => s + (r[k] ?? 0), 0);
+const has = (rows, k) => rows.some((r) => r[k] != null);
+// One function per KPI so current vs previous periods are computed identically.
+const KPIS = [
+  { key: 'clicks', label: 'Search clicks', f: fmt.int, need: 'gsc_clicks', v: (r) => sum(r, 'gsc_clicks') },
+  { key: 'impr', label: 'Search impressions', f: fmt.int, need: 'gsc_impressions', v: (r) => sum(r, 'gsc_impressions') },
+  { key: 'ctr', label: 'Search CTR', f: fmt.pct, need: 'gsc_clicks', v: (r) => sum(r, 'gsc_clicks') / (sum(r, 'gsc_impressions') || 1) },
+  { key: 'pos', label: 'Avg position', f: fmt.dec, need: 'gsc_position', lowerIsBetter: true,
+    v: (r) => r.reduce((s, x) => s + (x.gsc_position ?? 0) * (x.gsc_impressions ?? 0), 0) / (sum(r, 'gsc_impressions') || 1) },
+  { key: 'sess', label: 'Sessions', f: fmt.int, need: 'ga_sessions', v: (r) => sum(r, 'ga_sessions') },
+  { key: 'calc', label: 'Calculations', f: fmt.int, need: 'calculations', v: (r) => sum(r, 'calculations') },
+  { key: 'cps', label: 'Calculations / session', f: (n) => n == null ? '—' : n.toFixed(2), need: 'calculations', v: (r) => sum(r, 'calculations') / (sum(r, 'ga_sessions') || 1) },
+  { key: 'intl', label: 'Traffic outside Malaysia', f: fmt.pct, need: 'ga_home_country_sessions', v: (r) => 1 - sum(r, 'ga_home_country_sessions') / (sum(r, 'ga_sessions') || 1) },
+  { key: 'earn', label: 'Ad earnings (USD)', f: fmt.usd, need: 'ad_earnings', v: (r) => sum(r, 'ad_earnings') },
+  { key: 'rpm', label: 'Page RPM (USD)', f: fmt.usd, need: 'ad_pageviews', v: (r) => sum(r, 'ad_earnings') / (sum(r, 'ad_pageviews') || 1) * 1000 },
+];
+
+const CHARTS = [
+  { k: 'gsc_clicks', title: 'Search clicks / day' },
+  { k: 'gsc_impressions', title: 'Search impressions / day' },
+  { k: 'gsc_position', title: 'Average position (lower is better)', reverse: true },
+  { k: 'ga_sessions', title: 'Sessions / day' },
+  { k: 'calculations', title: 'Calculations / day' },
+  { k: 'ad_earnings', title: 'Ad earnings / day (USD)', type: 'bar', money: true },
+  { k: 'ad_rpm', title: 'Page RPM (USD)', money: true },
+];
+
+let DATA = null, charts = [];
+
+function windowed(rows, days) {
+  if (!days) return { cur: rows, prev: [] };
+  return { cur: rows.slice(-days), prev: rows.slice(-2 * days, -days) };
+}
+
+function renderKpis(rows, days) {
+  const { cur, prev } = windowed(rows, days);
+  $('#kpis').innerHTML = KPIS.filter((k) => has(rows, k.need)).map((k) => {
+    const v = k.v(cur);
+    let delta = '<span class="delta">no prior period</span>';
+    if (prev.length >= days * 0.8 && has(prev, k.need)) {
+      const p = k.v(prev);
+      const ch = p ? (v - p) / p : 0;
+      const better = k.lowerIsBetter ? ch < 0 : ch > 0;
+      const cls = Math.abs(ch) < 0.005 ? '' : better ? 'up' : 'down';
+      const arrow = ch > 0 ? '▲' : ch < 0 ? '▼' : '•';
+      delta = `<span class="delta ${cls}">${arrow} ${Math.abs(ch * 100).toFixed(1)}% vs prior ${days}d</span>`;
+    }
+    return `<div class="card kpi"><div class="label">${k.label}</div><div class="value">${k.f(v)}</div>${delta}</div>`;
+  }).join('') || '<div class="card empty">No metrics yet — run <code>npm run metrics:collect</code>.</div>';
+}
+
+function css(v) { return getComputedStyle($('.viz-root')).getPropertyValue(v).trim(); }
+
+function renderCharts(rows, days) {
+  charts.forEach((c) => c.destroy()); charts = [];
+  const { cur } = windowed(rows, days);
+  const host = $('#charts'); host.innerHTML = '';
+  const color = css('--series-1'), grid = css('--grid'), muted = css('--text-muted'), text = css('--text-primary'), surface = css('--surface-1');
+  for (const c of CHARTS) {
+    if (!has(cur, c.k)) continue;
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `<h2>${c.title}</h2><div class="chart-box"><canvas aria-label="${c.title}" role="img"></canvas></div>`;
+    host.appendChild(card);
+    const pts = cur.filter((r) => r[c.k] != null);
+    charts.push(new Chart(card.querySelector('canvas'), {
+      type: c.type || 'line',
+      data: { labels: pts.map((r) => r.date), datasets: [{
+        label: c.title, data: pts.map((r) => r[c.k]), borderColor: color, backgroundColor: color,
+        borderWidth: 2, pointRadius: 0, pointHoverRadius: 5, pointHoverBorderColor: surface, pointHoverBorderWidth: 2,
+        tension: 0.25, borderRadius: 4, maxBarThickness: 14,
+      }] },
+      options: {
+        responsive: true, maintainAspectRatio: false, animation: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: { legend: { display: false }, tooltip: {
+          backgroundColor: surface, titleColor: text, bodyColor: text, borderColor: grid, borderWidth: 1, displayColors: false,
+          callbacks: { label: (ctx) => c.money ? fmt.usd(ctx.parsed.y) : ctx.parsed.y.toLocaleString('en-MY') },
+        } },
+        scales: {
+          x: { grid: { display: false }, border: { color: grid }, ticks: { color: muted, maxTicksLimit: 6, maxRotation: 0,
+            callback(v) { const d = this.getLabelForValue(v); return new Date(d + 'T00:00:00Z').toLocaleDateString('en-MY', { day: 'numeric', month: 'short', timeZone: 'UTC' }); } } },
+          y: { reverse: !!c.reverse, beginAtZero: !c.reverse, grid: { color: grid }, border: { display: false }, ticks: { color: muted, maxTicksLimit: 5 } },
+        },
+      },
+    }));
+  }
+}
+
+function table(rows, cols) {
+  if (!rows?.length) return '<p class="empty">No data yet.</p>';
+  return `<table><thead><tr>${cols.map((c) => `<th class="${c.n ? 'n' : ''}">${c.h}</th>`).join('')}</tr></thead><tbody>${
+    rows.map((r) => `<tr>${cols.map((c) => `<td class="${c.n ? 'n' : 'q'}" ${c.n ? '' : `title="${esc(r[c.k])}"`}>${c.f ? c.f(r[c.k]) : esc(r[c.k])}</td>`).join('')}</tr>`).join('')
+  }</tbody></table>`;
+}
+
+function renderStatic(queries, pages, countries, content) {
+  const opp = (queries || []).filter((q) => q.opportunity).sort((a, b) => b.impressions - a.impressions).slice(0, 12);
+  $('#queries').innerHTML = table(opp, [
+    { h: 'Query', k: 'query' }, { h: 'Impr.', k: 'impressions', n: 1, f: fmt.int }, { h: 'Clicks', k: 'clicks', n: 1, f: fmt.int },
+    { h: 'CTR', k: 'ctr', n: 1, f: fmt.pct }, { h: 'Pos.', k: 'position', n: 1, f: fmt.dec },
+  ]);
+  const path = (u) => { try { return new URL(u).pathname; } catch { return u; } };
+  $('#pages').innerHTML = table((pages || []).slice(0, 10).map((p) => ({ ...p, page: path(p.page) })), [
+    { h: 'Page', k: 'page' }, { h: 'Clicks', k: 'clicks', n: 1, f: fmt.int }, { h: 'Impr.', k: 'impressions', n: 1, f: fmt.int },
+    { h: 'Pos.', k: 'position', n: 1, f: fmt.dec }, { h: 'Sessions', k: 'sessions', n: 1, f: fmt.int },
+  ]);
+  const top = (countries || []).slice(0, 8), total = (countries || []).reduce((s, c) => s + c.sessions, 0) || 1, max = top[0]?.sessions || 1;
+  $('#countries').innerHTML = top.length ? top.map((c) => `<div class="bar-row"><span>${esc(c.country)}</span>
+    <div class="bar-track" title="${fmt.int(c.sessions)} sessions"><div class="bar-fill" style="width:${(c.sessions / max) * 100}%"></div></div>
+    <span class="meta" style="text-align:right">${fmt.pct(c.sessions / total)}</span></div>`).join('') : '<p class="empty">No data yet.</p>';
+
+  if (content) {
+    const age = content.data_age_days;
+    const ageCls = age == null ? 'warn' : age < 90 ? 'ok' : age < 180 ? 'warn' : 'bad';
+    const ageIcon = { ok: '✓', warn: '⚠', bad: '✕' }[ageCls];
+    const kw = content.keywords || {};
+    $('#health').innerHTML = [
+      `<li><span class="${ageCls}">${ageIcon}</span> ${content.data_year} rates verified ${content.data_last_verified ?? '—'} (${age ?? '?'} days ago)</li>`,
+      `<li>📄 ${content.tool_pages} tool pages · ${content.cluster_pages} salary pages · ${content.articles} articles</li>`,
+      `<li>🗂 Keywords: ${['proposed', 'approved', 'drafted', 'published'].map((s) => `${kw[s] ?? 0} ${s}`).join(' · ')}</li>`,
+      `<li>🔎 Rate watcher last ran: ${content.watch_last_checked ?? 'never'}</li>`,
+    ].join('');
+  }
+}
+
+async function init() {
+  const [daily, queries, pages, countries, content] = await Promise.all(['daily.json', 'queries.json', 'pages.json', 'countries.json', 'content.json'].map(load));
+  DATA = daily?.rows || [];
+  $('#updated').textContent = daily ? `Updated ${new Date(daily.updated).toLocaleString('en-MY')} · ${DATA.length} days of data · Search Console lags ~2 days` : 'No data found';
+  const notes = [];
+  if (daily?.sample) notes.push('Showing <b>sample data</b>. Run <code>npm run metrics:collect</code> with credentials to replace it.');
+  for (const [src, st] of Object.entries(daily?.sources || {})) if (!String(st).startsWith('ok')) notes.push(`${src}: ${esc(st)}`);
+  $('#banner').innerHTML = notes.length ? `<div class="banner">${notes.join('<br>')}</div>` : '';
+  renderStatic(queries, pages, countries, content);
+  draw(28);
+}
+
+function draw(days) { renderKpis(DATA, days); renderCharts(DATA, days); }
+
+document.querySelectorAll('.seg button').forEach((b) => b.addEventListener('click', () => {
+  document.querySelectorAll('.seg button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  draw(Number(b.dataset.range));
+}));
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => draw(Number($('.seg [aria-pressed="true"]').dataset.range)));
+init();
+</script>
+</body>
+</html>
