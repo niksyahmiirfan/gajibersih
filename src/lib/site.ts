@@ -1,5 +1,5 @@
 export const SITE = {
-  name: 'GajiBersih',
+  name: 'GajiClean',
   url: (process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com').replace(/\/$/, ''),
   gaId: process.env.NEXT_PUBLIC_GA_ID || '',
   adsenseClient: process.env.NEXT_PUBLIC_ADSENSE_CLIENT || '',
