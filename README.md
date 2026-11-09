@@ -1,8 +1,6 @@
-# GajiBersih — Malaysia take-home pay calculator
+# GajiClean — Malaysia take-home pay calculator
 
 A static Next.js site (EPF, SOCSO, EIS, SKBBK and an income tax estimate) with a semi-automated, human-approved content pipeline and a private metrics dashboard. It is the first site in the utility-sites plan and the template for the multi-country engine.
-
-> Rename `GajiBersih` in `src/lib/site.ts` and `package.json` once you pick a domain.
 
 ## Quick start
 
