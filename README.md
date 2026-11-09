@@ -106,17 +106,19 @@ Free-tier limits and model names change: check the current ones and set `LLM_MOD
 | Workflow | When | Does |
 |---|---|---|
 | `ci.yml` | every branch push; PRs and pushes to main | typecheck, tests, verify content, build, pipeline smoke test |
-| `content.yml` | weekly / manual | drafts approved keywords → PR (`content/auto-<run>` → main) |
-| `refresh.yml` | daily | official rate pages changed → GitHub issue, fingerprint update → PR (`bot-data` → main) |
-| `metrics.yml` | daily | metrics snapshot → private metrics repo, or PR (`bot-data` → main) if no `METRICS_REPO` is configured |
+| `content.yml` | weekly / manual | drafts approved keywords → PR (`content/auto-<run>` → develop) |
+| `refresh.yml` | daily | official rate pages changed → GitHub issue, fingerprint update → PR (`bot-data` → develop) |
+| `metrics.yml` | daily | metrics snapshot → private metrics repo, or PR (`bot-data` → develop) if no `METRICS_REPO` is configured |
 | Cloudflare Workers Builds | main + PRs | Hosting via `wrangler.jsonc` (static assets from `out/`). Build `npm run build`, deploy `npx wrangler deploy`; preview URL on every PR |
 
 ## Branching & merging into main
 
-- **`develop`** — day-to-day feature work and fixes branch off here (or off a short-lived `feat/…`/`fix/…` branch). Open a PR into `main` when ready.
-- **`bot-data`** — the one branch automated workflows (`refresh.yml`, `metrics.yml`) commit to. They open/update a single PR from `bot-data` into `main`; nothing bot-authored lands on `main` without that PR being merged.
-- **`main`** is protected: merging requires an approving PR review and the `Quick checks` + `Main gate` CI jobs to pass. This applies to everyone, including repo admins — there is no direct push or self-merge path, by design.
-- `content.yml` keeps its own pattern: a fresh `content/auto-<run id>` branch and PR per run (so drafts don't clobber each other), reviewed and merged the same way.
+Everything lands on **`develop`** first. Promoting `develop` → `main` is always a separate, manual PR — nothing, bot or human, merges into `main` directly.
+
+- **`develop`** — the integration branch. Day-to-day feature work and fixes branch off here (or off a short-lived `feat/…`/`fix/…` branch cut from `develop`), and PR back into `develop`.
+- **`bot-data`** — the one branch automated workflows (`refresh.yml`, `metrics.yml`) commit to. They open/update a single PR from `bot-data` into `develop`.
+- `content.yml` keeps its own pattern: a fresh `content/auto-<run id>` branch and PR per run into `develop` (so drafts don't clobber each other).
+- When `develop` is ready to ship, open a PR from `develop` into `main` yourself. **`main`** is protected: merging requires an approving PR review and the `Quick checks` + `Main gate` CI jobs to pass, enforced for everyone including repo admins — there is no direct push or self-merge path.
 
 ## Yearly update checklist
 
