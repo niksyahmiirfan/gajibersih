@@ -1,11 +1,23 @@
 name: CI
+# Every branch push: quick checks.
+# PRs into main and pushes to main: quick checks, then the full main gate.
 on:
-  pull_request:
   push:
+    branches: ['**']
+  pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  # A newer commit replaces an in-progress run, except on main, where every commit is checked.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
-  test-and-build:
+  quick-checks:
+    name: Quick checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -14,6 +26,19 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
+
+  main-gate:
+    name: Main gate
+    needs: quick-checks
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
       - name: Verify all content (numbers vs data, structure, sources, duplicates)
         run: npx tsx pipeline/verify.ts --report verify-report.md
       - name: Build static site
@@ -22,9 +47,17 @@ jobs:
           NEXT_PUBLIC_SITE_URL: ${{ vars.SITE_URL }}
           NEXT_PUBLIC_GA_ID: ${{ vars.GA_ID }}
           NEXT_PUBLIC_ADSENSE_CLIENT: ${{ vars.ADSENSE_CLIENT }}
+      - name: Check key pages were exported
+        run: |
+          for page in index.html 404.html sitemap.xml robots.txt \
+            take-home-pay-calculator/index.html credit-cards/index.html \
+            loans/index.html methodology/index.html privacy/index.html \
+            ms/kalkulator-gaji-bersih/index.html ms/kad-kredit/index.html \
+            ms/pinjaman/index.html; do
+            test -s "out/$page" || { echo "::error::Missing from build: out/$page"; exit 1; }
+          done
       - name: Pipeline smoke test (offline mock provider)
         run: |
-          cp pipeline/keywords.yaml /tmp/kw.yaml
           LLM_PROVIDER=mock VERIFY_MIN_WORDS=50 npx tsx pipeline/run.ts --limit 1 --report /tmp/smoke.md
           cat /tmp/smoke.md
           git checkout -- content pipeline/keywords.yaml && git clean -fdq content
