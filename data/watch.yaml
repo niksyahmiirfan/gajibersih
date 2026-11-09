@@ -1,7 +1,7 @@
 # Official pages the refresh watcher fingerprints daily. A change opens an issue; a human updates data/my/<year>/.
 # `selector_hint` is a substring the page text must contain — if it disappears the page probably moved.
 - id: kwsp-contribution-rate
-  url: https://www.kwsp.gov.my/en/employer/contribution-rate
+  url: https://www.kwsp.gov.my/en/employer/responsibilities/mandatory-contribution
   affects: data/my/2026/epf.yaml
   selector_hint: contribution
 - id: perkeso-rate-of-contribution
@@ -9,10 +9,10 @@
   affects: data/my/2026/perkeso.yaml
   selector_hint: contribution
 - id: lhdn-tax-rate
-  url: https://www.hasil.gov.my/en/individual/individual-life-cycle/income-declaration/tax-rate/
+  url: https://www.hasil.gov.my/en/individu/kadar-cukai/?isStampsSite=false&lang=en&refererUrl=https%3A%2F%2Fwww.hasil.gov.my%2Fen%2Findividu%2Fkadar-cukai%2F
   affects: data/my/2026/tax.yaml
   selector_hint: chargeable income
 - id: lhdn-tax-reliefs
-  url: https://www.hasil.gov.my/en/individual/individual-life-cycle/income-declaration/tax-reliefs/
+  url: https://www.hasil.gov.my/en/individu/pelepasan-cukai/?isStampsSite=false&lang=en&refererUrl=https%3A%2F%2Fwww.hasil.gov.my%2Fen%2Findividu%2Fpelepasan-cukai%2F
   affects: data/my/2026/tax.yaml
   selector_hint: relief
