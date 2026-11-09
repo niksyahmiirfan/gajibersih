@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with: { ref: develop }
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: npm }
       - run: npm ci
@@ -35,9 +36,10 @@ jobs:
         if: ${{ env.CHANGED == 'true' }}
         uses: peter-evans/create-pull-request@v7
         with:
+          base: develop
           branch: bot-data
           title: 'chore: update watch fingerprints (${{ github.run_id }})'
           commit-message: 'chore: update watch fingerprints'
-          body: Automated fingerprint update from the rate refresh watcher. Review and merge into main.
+          body: Automated fingerprint update from the rate refresh watcher. Review and merge into develop.
           labels: automated, needs-review
           add-paths: data/watch-state.json
