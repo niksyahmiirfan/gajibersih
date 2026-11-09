@@ -8,6 +8,7 @@ on:
 permissions:
   contents: write
   issues: write
+  pull-requests: write
 
 jobs:
   watch:
@@ -25,9 +26,18 @@ jobs:
         run: |
           gh label create data-refresh --color D93F0B --description "Official rate source changed" --force
           gh issue create --title "Official rate page changed ($(date +%F))" --body-file changes.md --label data-refresh
-      - name: Commit updated fingerprints
+      - name: Stage updated fingerprints
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
           git add data/watch-state.json
-          git diff --cached --quiet || (git commit -m "chore: update watch fingerprints" && git push)
+          git diff --cached --quiet || echo "CHANGED=true" >> "$GITHUB_ENV"
+
+      - name: Open pull request
+        if: ${{ env.CHANGED == 'true' }}
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: bot-data
+          title: 'chore: update watch fingerprints (${{ github.run_id }})'
+          commit-message: 'chore: update watch fingerprints'
+          body: Automated fingerprint update from the rate refresh watcher. Review and merge into main.
+          labels: automated, needs-review
+          add-paths: data/watch-state.json
