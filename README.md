@@ -101,14 +101,22 @@ Free-tier limits and model names change: check the current ones and set `LLM_MOD
 
 **Variables:** `SITE_URL`, `GA_ID`, `ADSENSE_CLIENT`, `LLM_PROVIDER`, (`BASE_PATH` for GitHub Pages project URLs), metrics variables per `metrics/README.md`.
 **Secrets:** your LLM key, metrics credentials.
+**Repo visibility:** the repo is public, so `metrics.yml` requires `METRICS_REPO` (+ `METRICS_REPO_TOKEN`) pointing at a private metrics repo — it refuses to commit AdSense/GSC data here otherwise.
 
 | Workflow | When | Does |
 |---|---|---|
-| `ci.yml` | PRs, main | typecheck, tests, verify content, build, pipeline smoke test |
-| `content.yml` | weekly / manual | drafts approved keywords → PR |
-| `refresh.yml` | daily | official rate pages changed → GitHub issue |
-| `metrics.yml` | daily | metrics snapshot → private metrics repo |
+| `ci.yml` | every branch push; PRs and pushes to main | typecheck, tests, verify content, build, pipeline smoke test |
+| `content.yml` | weekly / manual | drafts approved keywords → PR (`content/auto-<run>` → main) |
+| `refresh.yml` | daily | official rate pages changed → GitHub issue, fingerprint update → PR (`bot-data` → main) |
+| `metrics.yml` | daily | metrics snapshot → private metrics repo, or PR (`bot-data` → main) if no `METRICS_REPO` is configured |
 | Cloudflare Workers Builds | main + PRs | Hosting via `wrangler.jsonc` (static assets from `out/`). Build `npm run build`, deploy `npx wrangler deploy`; preview URL on every PR |
+
+## Branching & merging into main
+
+- **`develop`** — day-to-day feature work and fixes branch off here (or off a short-lived `feat/…`/`fix/…` branch). Open a PR into `main` when ready.
+- **`bot-data`** — the one branch automated workflows (`refresh.yml`, `metrics.yml`) commit to. They open/update a single PR from `bot-data` into `main`; nothing bot-authored lands on `main` without that PR being merged.
+- **`main`** is protected: merging requires an approving PR review and the `Quick checks` + `Main gate` CI jobs to pass. This applies to everyone, including repo admins — there is no direct push or self-merge path, by design.
+- `content.yml` keeps its own pattern: a fresh `content/auto-<run id>` branch and PR per run (so drafts don't clobber each other), reviewed and merged the same way.
 
 ## Yearly update checklist
 
